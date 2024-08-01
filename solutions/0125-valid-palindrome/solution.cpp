@@ -9,15 +9,19 @@ public:
                 updated += ch;
             }
         }
-    for (char& c : updated) {
-         c = std::tolower(static_cast<unsigned char>(c));
-    }
-    std::string empty = "";
-    for (int i = updated.size() - 1; i >= 0; i--) {
-        empty += updated[i];
-    }
-    std::cout << empty << std::endl;
-    std::cout << updated;
-    return (empty == updated);
+         for (char &c : updated) {
+        c = std::tolower(static_cast<unsigned char>(c));
+        }
+        int f = 0;
+        int l = updated.size() - 1;
+        while (f <= l) {
+            if (updated[f] == updated[l]) {
+                f++;
+                l--;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 };
