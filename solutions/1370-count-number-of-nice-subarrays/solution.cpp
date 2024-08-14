@@ -1,24 +1,23 @@
-#include <vector>
-#include <unordered_map>
-using namespace std;
-
 class Solution {
 public:
     int numberOfSubarrays(vector<int>& nums, int k) {
-        int returner = 0;
-        int odd_count = 0;
-        unordered_map<int, int> count_map;
-        count_map[0] = 1;  // to handle the case where we have exactly k odd numbers from the start
+     return atMost(nums, k) - atMost(nums , k - 1);
+    }
+    int atMost(vector<int>& A, int k) {
+      int res = 0, i = 0, n = A.size();
+    
+      for (int j = 0; j < n; j++) {
+           k -= A[j] % 2;
         
-        for (int num : nums) {
-            odd_count += num % 2;
-            if (count_map.find(odd_count - k) != count_map.end()) {
-                returner += count_map[odd_count - k];
-            }
-            count_map[odd_count]++;
+        // Move the start of the window until it becomes valid (k >= 0)
+         for (; k < 0; i++) {
+            k += A[i] % 2;
         }
         
-        return returner;
+        res += j - i + 1;
     }
-};
+    
+    return res;
+}
 
+};
