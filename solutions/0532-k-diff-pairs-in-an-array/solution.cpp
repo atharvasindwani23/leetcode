@@ -1,46 +1,26 @@
 class Solution {
 public:
     int findPairs(vector<int>& nums, int k) {
-     int count = 0;
     std::sort(nums.begin(), nums.end());
     int start = 0;
     int end = 1;
+    int count = 0;
     while (end < nums.size() && start < nums.size()) {
-     if (k == 0) {
-       if (nums[end] - nums[start] > k) {
-        start++;
-     } else {
-        start++;
-        end++;
-        count++;
-        if (end == nums.size() - 1 || start == nums.size() - 1) {
-           return count;
-        }
-        std::cout <<"problem stems here" << std::endl;
-        while (end < nums.size() && nums[end] == nums[end - 1]) {
-            std::cout <<"problem here" << std::endl;
+        if (nums[end] - nums[start] < k) {
             end++;
-        }
-     }
-     }
-     if (nums[end] - nums[start] < k) {
-        end++;
-     }
-     if (nums[end] - nums[start] > k) {
-        start++;
-     }
-     if (nums[end] - nums[start] == k) {
-        if (start == end) {
-            end++;
+        } else if (nums[end] - nums[start] == k && (start != end)) {
+           count++;
+            while (start < nums.size() - 1 && nums[start] == nums[start + 1]) {
+                start++;
+            }
+            while(end < nums.size() - 1 && nums[end] == nums[end + 1]) {
+                end++;
+           }
+           end++;
+           start++;
         } else {
-        start++;
-        end++;
-        count++;
-        while (end != nums.size() && nums[end] == nums[end - 1]) {
-            end++;
+            start++;
         }
-        }
-     }
     }
     return count;
     }
