@@ -12,26 +12,30 @@
 class Solution {
 public:
     TreeNode* invertTree(TreeNode* root) {
-        if (!root) {
-            return nullptr;
-        }
-        if (root->left && root->right) {
-           TreeNode* temp = root->left;
-           root->left = root->right;
-           root->right = temp;
-        } else {
-            if (root->left) {
-                root->right = root->left;
-                root->left = NULL;
-            } else if (root->right) {
-                root->left = root->right;
-                root->right = NULL;
-            } else {
-                return root;
-            }
-        }
-        root->left = invertTree(root->left);
-        root->right = invertTree(root->right);
+        helper(root);
         return root;
     }
+    void helper(TreeNode *& root) {
+         if (!root) {
+            return;
+         }
+         if (root->left && root->right) {
+            TreeNode* temp = root->left;
+            root->left = root->right;
+            root->right = temp;
+         } else {
+            if (!root->left) {
+                root->left = root->right;
+                root->right = nullptr;
+            } else if (!root->right) {
+                root->right = root->left;
+                root->left = nullptr;
+            } else {
+                return;
+            }
+         }
+         helper(root->left);
+         helper(root->right);
+    }
+
 };
