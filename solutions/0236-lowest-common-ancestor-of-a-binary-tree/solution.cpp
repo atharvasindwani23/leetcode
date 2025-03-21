@@ -10,51 +10,41 @@
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-    std::map<TreeNode*, TreeNode*> parentNodes;
-    parentNodes[root] = NULL;
-    map_returner(root, parentNodes);
-    std::vector<int> p_parents;
-    std::vector<int> q_parents;
-    while (p != nullptr) {
-        std::cout << p->val << std::endl;
-        p_parents.push_back(p->val);
-        p = parentNodes[p];
-    }
-    while ( q != nullptr) {
-        std::cout << q->val << std::endl;
-        q_parents.push_back(q->val);
-        q = parentNodes[q];
-    }
-     for (int i : p_parents) {
-        for (int j : q_parents) {
-            if (i == j) {
-                return (new TreeNode(i));
-            }
-        }
-     }
-     std::cout << "this then?" << std::endl;
-     return nullptr;
-    }
-
-
-     void map_returner(TreeNode* root, std::map<TreeNode*, TreeNode*> &map) {
-       if (!root) {
-        std::cout << "this??" << std::endl;
-        return;
+       std::map<TreeNode*, TreeNode*> parentMap;
+       parentMap[root] = nullptr;
+       parentMapMaker(root, parentMap);
+       std::vector<TreeNode*> p_path;
+       std::vector<TreeNode*> q_path;
+       TreeNode* copy = p;
+       while (copy != nullptr) {
+         p_path.push_back(copy);
+         copy = parentMap[copy];
        }
-       if (root->left && root->right) {
-        map[root->left] = root;
-        map[root->right] = root;
-        } else {
-            if (root->left) {
-                map[root->left] = root;
-            } else if (root->right) {
-                map[root->right] = root;
-            } else {
-                return;
+       copy = q;
+       while (copy != nullptr) {
+        q_path.push_back(copy);
+        copy = parentMap[copy];
+       }
+       for (TreeNode* i : q_path) {
+        for (TreeNode* j : p_path) {
+            if (i->val == j -> val) {
+                return i;
             }
         }
-        map_returner(root->left, map);
-        map_returner(root->right, map);
+       }
+       return nullptr;
+     }
+     void parentMapMaker(TreeNode* root, std::map<TreeNode*, TreeNode*>& parent) {
+         if (!root) {
+            return;
+         }
+         if (root->left) {
+            parent[root->left] = root;
+         }
+         if (root->right) {
+            parent[root->right] = root;
+         }
+         parentMapMaker(root->left, parent);
+         parentMapMaker(root->right, parent);
      }
 };
