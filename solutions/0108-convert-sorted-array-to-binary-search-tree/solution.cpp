@@ -12,21 +12,14 @@
 class Solution {
 public:
     TreeNode *sortedArrayToBST(vector<int> &num) {
-        if(num.size() == 0) return NULL;
-        if(num.size() == 1)
-        {
-            return new TreeNode(num[0]);
+        if (num.size() == 0) {
+            return nullptr;
         }
-        
-        int middle = num.size()/2;
-        TreeNode* root = new TreeNode(num[middle]);
-        
-        vector<int> leftInts(num.begin(), num.begin()+middle);
-        vector<int> rightInts(num.begin()+middle+1, num.end());
-        
-        root->left = sortedArrayToBST(leftInts);
-        root->right = sortedArrayToBST(rightInts);
-        
+        TreeNode* root = new TreeNode(num[num.size() / 2]);
+        std::vector<int>left_vec(num.begin(), num.begin() + num.size() / 2);
+        std::vector<int>right_vec(num.begin() + num.size() / 2 + 1, num.end());
+        root->left = sortedArrayToBST(left_vec);
+        root->right = sortedArrayToBST(right_vec);
         return root;
     }
 };
