@@ -1,45 +1,39 @@
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-      std::string returner = "";
-      int left = 0;
-      int right = 1;
-      int max = 0;
-      int flag = 0;
-      if (s.size() == 0) {
-        return 0;
-      }
-      if (s.size() == 1) {
-        return 1;
-      }
-      returner += s[left];
-      while (right < s.size()) {
-        if(!present(returner, s[right])) {
-            returner += s[right];
-            std::cout << returner << std::endl;
-            right++;
-        } else {
-            flag = 1;
-            if (max < returner.size()) {
-                max = returner.size();
-                std::cout << max << std::endl;
-            }
-         returner = returner.substr(1);
-         left++;
+        if (s.size() == 0) {
+            return 0;
         }
-     //max will not be updated once it breaks out of the while loop         
-      }
-      if (max < returner.size()) {
-        max = returner.size();
-      }
-      return max;
-    }
-    bool present(string s, char ch) {
-        for (char c : s) {
-            if (c == ch) {
-                return true;
-            }
+        if (s.size() == 1) {
+            return 1;
         }
-        return false;
+        int first = 0;
+        int next = 1;
+        int maxLength = 0;
+        set<int> unique;
+        unique.insert(s[first]);
+ 
+        while (next < s.size()) {
+         if (unique.contains(s[next])) {
+           unique.erase(s[first]);
+           first++;
+         } else {
+            unique.insert(s[next]);
+            maxLength = max(maxLength, next - first + 1);
+            next++;
+         }
+        }
+        return maxLength;
     }
 };
+
+
+// b a c d a e ->   //two pointers 
+// a b c d
+// a b 
+// a a
+// a
+// ""
+
+//
+
