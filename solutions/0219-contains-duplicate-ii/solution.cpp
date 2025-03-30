@@ -1,17 +1,28 @@
 class Solution {
 public:
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
-        std::set<int>unique;
-        for (int i = 0; i < nums.size(); i++) {
-            if (unique.contains(nums[i])) {
-                return true;
-            } else {
-                unique.insert(nums[i]);
-                if (unique.size() > k) {
-                    unique.erase(nums[i - k]);
-                }
-            }
-        }
-        return false;
+       set<int> unique;
+       int first = 0;
+       int next = 1;
+       unique.insert(nums[first]);
+       while (next < nums.size()) {
+           if (unique.contains(nums[next]) && next - first <=k) {
+            std::cout << next << std::endl;
+            std::cout << first << std::endl;
+            return true;
+           }
+           while (next - first > k) {
+            std::cout << next << std::endl;
+            std::cout << first << std::endl;
+            std::cout << "nigger?" << std::endl;
+            unique.erase(nums[first]);
+            first++;
+           }
+           if (!unique.contains(nums[next])) {
+            unique.insert(nums[next]);
+            next++;
+           }
+       }
+       return false;
     }
 };
