@@ -1,20 +1,24 @@
 class Solution {
 public:
     vector<int> sortedSquares(vector<int>& nums) {
-        vector<int>returner(nums.size());
-        int start = 0;
-        int end = nums.size() - 1;
-        int idx = nums.size() - 1;
-        while (start <= end) {
-            if (nums[start] * nums[start] < nums[end] * nums[end]) {
-                returner[idx] = nums[end] * nums[end];
-                end--;
-            } else {
-                returner[idx] = nums[start] * nums[start];
-                start++;
-            }
-            idx--;
+    int left = 0;
+    int right = nums.size() - 1;
+    int idx = nums.size() - 1;
+    vector<int> returner(nums.size());
+    while (left <= right) {
+        if (abs(nums[left]) > abs(nums[right])) {
+            std:: cout << "i enter here" << std::endl;
+            returner[idx] = nums[left] * nums[left];
+            std::cout << returner[right] << std::endl;
+            left++;
+        } else {
+         returner[idx] = nums[right] * nums[right];
+         right--;
         }
-        return returner;
+        idx--;
+        std:: cout << left << std::endl;
+        std::cout << right << std::endl;
+    }
+    return returner;
     }
 };
