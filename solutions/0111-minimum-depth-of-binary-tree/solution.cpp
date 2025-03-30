@@ -12,14 +12,15 @@
 class Solution {
 public:
     int minDepth(TreeNode* root) {
-        if (!root) return 0; // Base case: empty tree has depth 0
-
-        // If a node has only one child, we must take the path with the valid child
-        if (!root->left) return 1 + minDepth(root->right);
-        if (!root->right) return 1 + minDepth(root->left);
-
-        // If both children exist, take the min of left and right depths
-        return min(minDepth(root->left) + 1, minDepth(root->right) + 1);
+       if (!root) {
+         return 0;
+       }
+       if (!root->left) {
+        return minDepth(root->right) + 1;
+       }
+       if (!root->right) {
+        return minDepth(root->left) + 1;
+       }
+       return min(minDepth(root->left) + 1, minDepth(root->right) + 1);
     }
 };
-
