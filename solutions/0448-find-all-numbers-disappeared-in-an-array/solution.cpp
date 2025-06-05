@@ -1,17 +1,17 @@
 class Solution {
 public:
     vector<int> findDisappearedNumbers(vector<int>& nums) {
-        std::set<int> unique;
-        std::vector<int>returner;
-        for (int i : nums) {
-            unique.insert(i);
+       std::vector<int> returner;
+       std::map<int,int> freq;
+       for (int i : nums) {
+        freq[i]++;
+       }
+       for (int i = 1; i <= nums.size(); i++) {
+        if (freq[i] == 0) {
+            returner.push_back(i);
         }
-        for (unsigned int i  = 1; i <= nums.size(); i++) {
-            if (!unique.contains(i)) {
-                 returner.push_back(i);
-            } 
-        }
-        return returner;
+       }
+       return returner;
     }
 };
 
