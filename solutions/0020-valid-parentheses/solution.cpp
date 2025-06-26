@@ -2,25 +2,21 @@ class Solution {
 public:
    bool isValid(string s) {
     stack<char> elements;
-    
-    for (char c : s) {
-        if (c == '(' || c == '[' || c == '{') {
-            elements.push(c);
+    elements.push(s[0]);
+    for (int i = 1; i < s.size(); i++) {
+        if (elements.empty()) {
+            elements.push(s[i]);
+            continue;
+        }
+        char c = elements.top();
+        char next = s[i];
+        if (c == '(' && next == ')' || c == '[' && next == ']' || c == '{' && next == '}') {
+            elements.pop();
         } else {
-            if (elements.empty()) return false; // Prevent accessing top() on empty stack
-            
-            char top = elements.top();
-            if ((top == '(' && c == ')') ||
-                (top == '[' && c == ']') ||
-                (top == '{' && c == '}')) {
-                elements.pop();
-            } else {
-                return false; // Mismatched closing bracket
-            }
+            elements.push(next);   
         }
     }
-    
-    return elements.empty(); // Stack should be empty for valid brackets
+    return elements.empty();
 }
     // "([])"
 };
