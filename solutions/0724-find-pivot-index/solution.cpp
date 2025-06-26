@@ -1,18 +1,20 @@
 class Solution {
 public:
     int pivotIndex(vector<int>& nums) {
-        for (unsigned int i = 0; i < nums.size(); i++) {
-            if (helper(0, i, nums) == helper(i + 1, nums.size(), nums)) {
+        for (int i  = 0; i < nums.size(); i++) {
+            std::cout << helper(nums, 0 , i) << std::endl;
+            std::cout << helper(nums, i + 1, nums.size()) << std::endl;
+            if (helper(nums,0, i) == helper(nums, i + 1, nums.size())) {
                 return i;
             }
         }
         return -1;
     }
-    int helper(int start, int end,vector<int>& nums) {
-        int sum = 0;
-        for (unsigned int i = start; i < end; i++) {
-           sum += nums[i];
+    int helper(vector<int>&nums, int lower, int upper) {
+        int returner = 0;
+        for (int i = lower; i < upper; i++) {
+            returner += nums[i];
         }
-        return sum;
+        return returner;
     }
 };
