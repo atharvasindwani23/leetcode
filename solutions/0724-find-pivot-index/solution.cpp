@@ -1,20 +1,22 @@
+// Time Complexity : O(n)
 class Solution {
 public:
     int pivotIndex(vector<int>& nums) {
-        for (int i  = 0; i < nums.size(); i++) {
-            std::cout << helper(nums, 0 , i) << std::endl;
-            std::cout << helper(nums, i + 1, nums.size()) << std::endl;
-            if (helper(nums,0, i) == helper(nums, i + 1, nums.size())) {
-                return i;
-            }
+        // Initialize rightSum to store the sum of all the numbers strictly to the index's right...
+        int rightSum = accumulate(nums.begin(), nums.end(), 0);
+        // Initialize leftSum to store the sum of all the numbers strictly to the index's left...
+        int leftSum = 0;
+        // Traverse all elements through the loop...
+        for (int idx = 0; idx < nums.size(); idx++) {
+            // subtract current elements with from rightSum...
+            rightSum -= nums[idx];
+            // If the sum of all the numbers strictly to the left of the index is equal to the sum of all the numbers strictly to the index's right...
+            if (leftSum == rightSum)
+                return idx;     // Return the pivot index...
+            // add current elements with leftSum...
+            leftSum += nums[idx];
         }
-        return -1;
+        return -1;      // If there is no index that satisfies the conditions in the problem statement...
     }
-    int helper(vector<int>&nums, int lower, int upper) {
-        int returner = 0;
-        for (int i = lower; i < upper; i++) {
-            returner += nums[i];
-        }
-        return returner;
-    }
+    
 };
