@@ -1,69 +1,85 @@
-#include <unordered_map>
-
 class LRUCache {
+
 private:
     struct Node {
-        int key, value;
-        Node* prev;
-        Node* next;
-        Node(int k, int v) : key(k), value(v), prev(nullptr), next(nullptr) {}
+    int key;
+    int value;
+    Node* next;
+    Node* prev;
+    Node(int k, int v) {
+        key = k;
+        value = v;
+        prev = nullptr;
+        next = nullptr;
+    }     
     };
 
-    int capacity;
-    std::unordered_map<int, Node*> cache;
     Node* head;
     Node* tail;
+    int capacity_;
+    std::map<int, Node*> keyToNode;
 
-    void moveToEnd(Node* node) {
-        removeNode(node);
-        insertAtEnd(node);
+    void moveToEnd(Node* curr) {
+        deleteNode(curr);
+        insertToEnd(curr);
     }
-
-    void removeNode(Node* node) {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
+    void deleteNode(Node* curr) {
+        curr->prev->next = curr->next;
+        curr->next->prev = curr->prev;
     }
-
-    void insertAtEnd(Node* node) {
-        node->prev = tail->prev;
-        node->next = tail;
-        tail->prev->next = node;
-        tail->prev = node;
+    void insertToEnd(Node* curr) {
+        //1->2->3->tail => 1->2->3->4->tail
+        Node* back = tail->prev;
+        back->next = curr;
+        curr->next = tail;
+        tail->prev = curr;
+        curr->prev = back;
     }
 
 public:
-    LRUCache(int cap) : capacity(cap) {
-        head = new Node(-1, -1); // Dummy head
-        tail = new Node(-1, -1); // Dummy tail
+    LRUCache(int capacity) {
+        capacity_ = capacity;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
         head->next = tail;
         tail->prev = head;
     }
-
+    
     int get(int key) {
-        if (cache.find(key) == cache.end()) return -1;
-        Node* node = cache[key];
-        removeNode(node);
-        moveToEnd(node); // Mark as most recently used
+        if (keyToNode.find(key) == keyToNode.end()) {
+            return -1;
+        }
+        Node* node = keyToNode[key];
+        moveToEnd(node);
         return node->value;
     }
-
+    
     void put(int key, int value) {
-        if (cache.find(key) != cache.end()) {
-            Node* node = cache[key];
-            node->value = value;
-            removeNode(node);
-            moveToEnd(node);
-        } else {
-            if (cache.size() == capacity) {
-                Node* lru = head->next; // First element is least recently used
-                cache.erase(lru->key);
-                removeNode(lru);
+        if (keyToNode.find(key) == keyToNode.end()) {
+            if (keyToNode.size() == capacity_) {
+                Node* lru = head->next;
+                keyToNode.erase(lru->key);
+                deleteNode(lru);
                 delete lru;
             }
-            Node* newNode = new Node(key, value);
-            cache[key] = newNode;
-            insertAtEnd(newNode);
+            Node* insert = new Node(key,value);
+            keyToNode[key] = insert;
+            insertToEnd(insert);
+        } else {
+            Node* node = keyToNode[key];
+            node->value = value;
+            moveToEnd(node);
         }
     }
+
+    // least recently used => something which we havent used in a long time [get, put both count as a use]
+    //most recently used => [the one which we just used]
+    //ordering [linked list]
 };
 
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
