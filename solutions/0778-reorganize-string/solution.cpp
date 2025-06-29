@@ -1,43 +1,39 @@
 class Solution {
 public:
-    string reorganizeString(string S) {
-        string res="";
-        unordered_map<char,int> mp;
-        priority_queue<pair<int,char>>pq;
-        
-        for(auto s: S)
-            mp[s]+=1;
-        
-        for(auto m: mp)
-            pq.push(make_pair(m.second,m.first));
-        
-        while(pq.size()>1){
-            auto top1= pq.top();
-            pq.pop();
-            auto top2 = pq.top();
-            pq.pop();
-            
-            res+=top1.second;
-            res+=top2.second;
-            
-            top1.first -=1;
-            top2.first -= 1;
-            
-            if(top1.first > 0)
-                pq.push(top1);
-            
-            if(top2.first > 0)
-                pq.push(top2);
+    string reorganizeString(string s) {
+        map<char, int> freq;
+        string res = "";
+        priority_queue<pair<int,char>> pq;
+        for (char ch : s) {
+            freq[ch]++;
         }
-        
-        if(!pq.empty()){
-            if(pq.top().first > 1)
+        for (auto x = freq.begin(); x != freq.end(); x++) {
+            pq.push({x->second, x->first});
+        }
+
+        while (pq.size() > 1) {
+            auto one = pq.top();
+            pq.pop();
+            auto two = pq.top();
+            pq.pop();
+            one.first--;
+            two.first--;
+            res += one.second;
+            res += two.second;
+            if (one.first > 0) {
+                pq.push(one);
+            }
+            if (two.first > 0) {
+                pq.push(two);
+            }
+        }
+        if (pq.size() == 1) {
+            auto x = pq.top();
+            if (x.first > 1) {
                 return "";
-            
-            else
-                res+=pq.top().second;
+            }
+            return res + x.second;
         }
-        
         return res;
     }
 };
