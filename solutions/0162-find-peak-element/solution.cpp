@@ -1,42 +1,37 @@
 class Solution {
 public:
     int findPeakElement(vector<int>& nums) {
-       int first = 0;
-       int last = nums.size() - 1;
-       if (nums.size() == 1) {
-        return 0;
-       }
-       while (first < last) {
-        int mid = (first + last) / 2;
-        if (last - first == 1) {
-            if (nums[first] > nums[last]) {
-                return first;
+        if (nums.size() == 1) {
+            return 0;
+        }
+        if (nums[0] >= nums[1]) {
+            return 0;
+        }
+        if (nums[nums.size() - 1] >= nums[nums.size() - 2]) {
+            return nums.size() - 1;
+        }
+        //we know we need to use binary search the q is how, 
+        //im asking myself what do i really need? [1,2,3,1], if (curr < curr + 1 && curr > curr - 1) {return curr}
+        //else if curr < curr + 1 -> we then know that curr + 1 has a chance of being a pivot so we shift the stuff to that
+
+        int lower = 0;
+        int upper = nums.size() - 1;
+        while (lower <= upper) {
+            int curr = (lower + upper) / 2;
+            cout << lower << endl;
+            cout << upper << endl;
+            if (nums[curr] >= nums[curr - 1] && nums[curr] >= nums[curr + 1]) {
+                return curr;
+            } else if (nums[curr] < nums[curr + 1]) {
+                lower = curr;
             } else {
-                return last;
+                upper = curr;
             }
         }
-        if (nums[mid - 1] < nums[mid] && nums[mid] > nums[mid + 1]) {
-            return mid;
-        }
-        if (nums[mid] <nums[mid + 1]) {
-            first = mid + 1;
-        } else if (nums[mid - 1] > nums[mid]) {
-            last = mid - 1;
-        }
-       }
-       if (first == last) {
-        return first;
-       }
-       return 0;
+        return -1;
     }
 
-    // [1 2 3 1] -> 2
-    // [1 2 1 3 5 6 4] -> 1/5
-    // [1 2 .... inf .. 0] -> largest element will always be one of the peeks
-    // [1 1 1 1 1 1 1] -> ? anything goes
-    // [1 2 4 4 3 2] ->2/3
-    // [1 2 1 3 5 6 4] -> 2, 6 
-    // 1 -> 2 -> 1
-    // 3 -> 5 -> 6 -> 4
-     
+
+    // peak is essentially the element which is strictly greater than neighbours
+    //should be easy
 };
