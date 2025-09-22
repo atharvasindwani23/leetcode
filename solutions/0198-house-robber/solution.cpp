@@ -1,16 +1,13 @@
 class Solution {
 public:
     int rob(vector<int>& nums) {
-     
-      std::map<int,int>dp;
-      if (nums.size() == 1) {
-        return nums[0];
-      }
-      dp[0] = nums[0];
-      dp[1] = std::max(nums[1], nums[0]);
-      for (unsigned int i = 2; i < nums.size(); i++) {
-        dp[i] = std::max(dp[i - 1], dp[i - 2] + nums[i]);
-      }
-      return dp[nums.size() - 1];  
+        int size = nums.size();
+        vector<int> dp(size + 1, 0);
+        dp[size] = 0;
+        dp[size - 1] = nums[size - 1];
+        for (int i  = size - 2; i >= 0; i--) {
+            dp[i] = max(dp[i + 1], nums[i] + dp[i + 2]);
+        }
+        return dp[0];
     }
 };
