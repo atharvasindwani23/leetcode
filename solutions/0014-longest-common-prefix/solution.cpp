@@ -1,30 +1,24 @@
 class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
-        std::string prefix = "";
-        std::string shortest = shortestWordReturner(strs);
-        int min = 10000000;
-        for (std::string str : strs) {
-            for (unsigned int i = 0; i < shortest.size(); i++) {
-                if (str[i] != shortest[i]) {
-                    if (min > i) {
-                        min = i;
+            string res = "";
+            //we know its a prefix, so the string should be starting from 0
+            int len = INT_MAX;
+            for (string str : strs) {
+                len = min(len, (int)str.size());
+            }
+            for (int i = len; i >= 0; i--) {
+                string word = strs[0].substr(0, i);
+                bool b = false;
+                for (string str : strs) {
+                    if (word != str.substr(0, i)) {
+                        b = true;
                     }
-                   //return shortest.substr(0, i);
+                }
+                if (!b) {
+                    return word;
                 }
             }
-        }
-        return shortest.substr(0, min);
-    }
-     string shortestWordReturner(vector<string>& strs) {
-        int min = 10000000000;
-        std::string returner;
-        for (std::string str : strs) {
-           if (min > str.size()) {
-            min = str.size();
-            returner = str;
-           }
-        }
-        return returner;
+            return res;
     }
 };
