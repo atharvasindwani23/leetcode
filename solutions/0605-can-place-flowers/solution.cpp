@@ -1,24 +1,25 @@
 class Solution {
 public:
     bool canPlaceFlowers(vector<int>& flowerbed, int n) {
-        if (flowerbed.size() == 1) {
-            return (flowerbed[0] == 0 && n == 1 || flowerbed[0] == 1 && n == 0 || flowerbed[0] == 0);
-        }
-        int c = 0;
-        if (flowerbed[0] == 0 && flowerbed[1] == 0) {
-            c++;
-            flowerbed[0] = 1;
-        }
-        for (unsigned int i  = 1; i < flowerbed.size() - 1; i++) {
-            if (flowerbed[i - 1] == 0 && flowerbed[i + 1] == 0 && flowerbed[i] == 0) {
-                flowerbed[i] = 1;
-                c++;
+        vector<int> dp(flowerbed.size() + 1, 0);
+         int len = flowerbed.size();
+         dp[len] = 0;
+         if (flowerbed[len - 1] == 0) {
+            dp[len - 1] = 1;
+         } else {
+            dp[len - 1] = 0; 
+         }
+         for (int i = len - 2; i >= 0; i--) {
+            if (flowerbed[i] == 1) {
+                dp[i] = dp[i + 2];
+            } else {
+                if (flowerbed[i + 1] == 1) {
+                    dp[i] = dp[i + 1];
+                } else {
+                    dp[i] = dp[i + 2] + 1;
+                }
             }
-        }
-        if (flowerbed[flowerbed.size() - 1] == 0 && flowerbed[flowerbed.size() - 2] == 0) {
-            c++;
-        }
-        std::cout << c;
-        return (c >= n);
-     }
+         }
+         return dp[0] >= n;
+    }
 };
