@@ -1,0 +1,25 @@
+class TopVotedCandidate {
+public:
+    vector<int> times;
+    vector<int> leaders;
+    unordered_map<int, int> count;
+
+    TopVotedCandidate(vector<int>& persons, vector<int>& times) {
+        this->times = times;
+        int leader = -1;
+        for (int i = 0; i < persons.size(); ++i) {
+            count[persons[i]]++;
+            if (leader == -1 || count[persons[i]] >= count[leader]) {
+                leader = persons[i];
+            }
+            leaders.push_back(leader);
+        }
+    }
+
+    int q(int t) {
+        // binary search: find last index where times[i] <= t
+        int idx = upper_bound(times.begin(), times.end(), t) - times.begin() - 1;
+        return leaders[idx];
+    }
+};
+
