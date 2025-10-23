@@ -1,36 +1,36 @@
 class ExamTracker {
 public:
-    map<int, long long> prefixSum;
-    long long total = 0;
+    map<int, long long> timeToScore;  // prefix sums
 
     void record(int time, int score) {
-        total += score;
-        prefixSum[time] = total;
+        long long cumulative = score;
+
+        auto it = timeToScore.lower_bound(time);
+        if (it != timeToScore.begin()) {
+            auto prev = std::prev(it);
+            cumulative += prev->second;
+        }
+
+        timeToScore[time] = cumulative;
     }
 
     long long totalScore(int startTime, int endTime) {
-        if (prefixSum.empty()) {
-            return 0;
+        if (timeToScore.empty()) return 0;
+
+        auto upper = timeToScore.upper_bound(endTime);
+        if (upper == timeToScore.begin()) return 0;
+        upper--;
+
+        long long right = upper->second;
+        long long left = 0;
+
+        auto lower = timeToScore.lower_bound(startTime);
+        if (lower != timeToScore.begin()) {
+            auto prev = std::prev(lower);
+            left = prev->second;
         }
 
-        long long endSum = 0;
-        long long startSum = 0;
-
-        // Find total sum up to endTime
-        auto itEnd = prefixSum.upper_bound(endTime);
-        if (itEnd != prefixSum.begin()) {
-            --itEnd;
-            endSum = itEnd->second;
-        }
-
-        // Find total sum just before startTime
-        auto itStart = prefixSum.lower_bound(startTime);
-        if (itStart != prefixSum.begin()) {
-            --itStart;
-            startSum = itStart->second;
-        }
-
-        return endSum - startSum;
+        return right - left;
     }
 };
 
