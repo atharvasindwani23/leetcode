@@ -3,67 +3,66 @@ class BrowserHistory {
 private:
 
         struct ListNode {
-        string value;
-        ListNode* next;
-        ListNode* prev;
-        ListNode(string str) {
-            value = str;
-        }
-    };
-
+            ListNode* next;
+            ListNode* prev;
+            string value;
+            ListNode(string str) {
+                value = str;
+            }
+        };
     ListNode* head;
     ListNode* tail;
-    ListNode* currPos;
+    ListNode* current;
 
 public:
-
     BrowserHistory(string homepage) {
-
+        ListNode* curr = new ListNode(homepage);
         head = new ListNode("");
         tail = new ListNode("");
-        ListNode* curr = new ListNode(homepage);
         head->next = curr;
         curr->prev = head;
         curr->next = tail;
         tail->prev = curr;
-        currPos = curr;
+        current = curr;
     }
     
     void visit(string url) {
-        currPos->next = tail;
-        tail->prev = currPos;
-        ListNode* newUrl = new ListNode(url);
-        currPos->next = newUrl;
-        newUrl->prev = currPos;
-        newUrl->next = tail;
-        tail->prev = newUrl;
-        currPos = newUrl;
+        ListNode* urlNode = new ListNode(url);
+        current->next = urlNode;
+        urlNode->prev = current;
+        urlNode->next = tail;
+        tail->prev = urlNode;
+        current = urlNode;
     }
     
     string back(int steps) {
-        int step = 0;
-        while (currPos != head && step != steps) {
-            currPos = currPos->prev;
-            step++;
+        int counter = 0;
+        ListNode* flag = current;
+        while (counter != steps && flag != head->next) {
+            flag = flag->prev;
+            counter++;
         }
-        if (currPos == head) {
-            currPos = currPos->next;
-            return currPos->value;
+        if (counter == steps) {
+            current = flag;
+            return current->value;
         }
-        return currPos->value;
+        current = head->next;
+        return current->value;
     }
     
     string forward(int steps) {
-        int step = 0;
-        while (currPos != tail && step != steps) {
-            currPos = currPos->next;
-            step++;
+        int counter = 0;
+        ListNode* flag = current;
+        while (counter != steps && flag != tail->prev) {
+            flag = flag->next;
+            counter++;
         }
-        if (currPos == tail) {
-            currPos = currPos->prev;
-            return currPos->value;
+        if (counter == steps) {
+            current = flag;
+            return current->value;
         }
-        return currPos->value;
+        current = tail->prev;
+        return current->value;
     }
 };
 
