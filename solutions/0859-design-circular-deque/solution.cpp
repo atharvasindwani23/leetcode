@@ -1,55 +1,54 @@
 class MyCircularDeque {
 
 private:
-        struct ListNode {
-        ListNode* next;
-        ListNode* prev;
-        int value;
-        ListNode(int v) {
-            value = v;
-        }
-        };
-        ListNode* head;
-        ListNode* tail;
-        int capacity;
-        int size = 0;
 
+    struct ListNode {
+        
+    ListNode* next;
+    ListNode* prev;
+    int value;
+    ListNode(int val) {
+    value = val;
+    }
+};
+    
+    int capacity = 0;
+    int size = 0;
+    ListNode* head;
+    ListNode* tail;
 
 public:
     MyCircularDeque(int k) {
         capacity = k;
         head = new ListNode(-1);
-        tail = new ListNode(-1);
+        tail  = new ListNode(-1);
         head->next = tail;
-        tail->prev= head;
+        tail->prev = head;
     }
     
     bool insertFront(int value) {
-        if (capacity == size) {
-            return false;
-        }
-        ListNode* after = head->next;
-        ListNode* before = head;
-        ListNode* curr = new ListNode(value);
-        before->next = curr;
-        curr->prev = before;
-        curr->next = after;
-        after->prev = curr;
-        size++;
-        return true;
+     if (size == capacity) {
+        return false;
+     }
+     ListNode* curr = new ListNode(value);
+     ListNode* after = head->next;
+     head->next = curr;
+     curr->prev = head;
+     after->prev = curr;
+     curr->next = after;
+     size++;
+     return true;
     }
-    
     bool insertLast(int value) {
-        if (capacity == size) {
+         if (capacity == size) {
             return false;
         }
-        ListNode* after = tail;
         ListNode* before = tail->prev;
         ListNode* curr = new ListNode(value);
-        curr->prev = before;
         before->next = curr;
-        curr->next = after;
-        after->prev = curr;
+        curr->prev = before;
+        curr->next = tail;
+        tail->prev = curr;
         size++;
         return true;
     }
@@ -66,33 +65,37 @@ public:
     bool deleteLast() {
         if (size == 0) {
             return false;
-        }   
+        }
         tail = tail->prev;
         size--;
         return true;
     }
+
+    // lets think of a conventional queue, we add to the top and delete from the top
+    //the thing which is different now is that we also want this ability towards the tail
+    // so can we think of a data strcture through which we can quickly add and delete from the end and the start?
+    //yes, we can this is a prime example of a doubly linked list! 
     
     int getFront() {
-        if (size == 0) {
-            return -1;
-        }
+        if (size != 0) {
         return head->next->value;
+        }
+        return -1;
     }
     
     int getRear() {
-        if (size == 0) {
-            return -1;
-        }
+        if (size != 0) {
         return tail->prev->value;
-
+        }
+        return -1;
     }
     
     bool isEmpty() {
-        return size == 0;
+     return (size == 0);   
     }
     
     bool isFull() {
-        return capacity == size;
+        return (capacity == size);
     }
 };
 
