@@ -1,32 +1,30 @@
 class FrequencyTracker {
 public:
-    unordered_map<int, int> mp;   //store number & frequency count
-    unordered_map<int, unordered_set<int>> mps; //store frequency & set of number whose frequecny is same
-    FrequencyTracker() {
-        
-    }
-    
+    unordered_map<int, int> freq;      // number -> frequency
+    unordered_map<int, int> freqCount; // frequency -> how many numbers have this frequency
+
+    FrequencyTracker() {}
+
     void add(int number) {
-        if(mp.find(number) != mp.end()){
-            int f = mp[number];
-            mps[f].erase(number);
-        }
-        mp[number]++;
-        mps[mp[number]].insert(number);
+        int oldFreq = freq[number];
+        if (oldFreq > 0) freqCount[oldFreq]--;
+        freq[number]++;
+        freqCount[freq[number]]++;
     }
-    
+
     void deleteOne(int number) {
-        if(mp.find(number) != mp.end() && mp[number] > 0){
-            int f = mp[number];
-            mps[f].erase(number);
-            mp[number]--;
-            if(mp[number]){
-                mps[mp[number]].insert(number);
-            }
-        }
+        if (!freq.count(number) || freq[number] == 0) return;
+
+        int oldFreq = freq[number];
+        freqCount[oldFreq]--;
+
+        freq[number]--;
+        if (freq[number] > 0)
+            freqCount[freq[number]]++;
     }
-    
+
     bool hasFrequency(int frequency) {
-        return (mps[frequency].size() > 0);
+        return freqCount[frequency] > 0;
     }
 };
+
