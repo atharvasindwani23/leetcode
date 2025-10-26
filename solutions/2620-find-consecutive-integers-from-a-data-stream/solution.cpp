@@ -1,8 +1,8 @@
 class DataStream {
 public:
     int count = 0;
-    int value = 0;
-    int k = 0;
+    int k;
+    int value;
     DataStream(int value, int k) {
         this->value = value;
         this->k = k;
@@ -16,8 +16,6 @@ public:
         }
         return (count >= k);
     }
-
-    //just store a count of the number of consec elements, you see
 };
 
 /**
