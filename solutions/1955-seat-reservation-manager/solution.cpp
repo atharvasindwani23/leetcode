@@ -1,23 +1,21 @@
 class SeatManager {
-priority_queue<int, vector<int>, greater<int>> seats;
 public:
+    priority_queue<int, vector<int>, greater<int>> minHeap;
     SeatManager(int n) {
         for (int i = 1; i <= n; i++) {
-            seats.push(i);
+            minHeap.push(i);
         }
     }
     
     int reserve() {
-        int x = seats.top();
-        seats.pop();
+        int x = minHeap.top();
+        minHeap.pop();
         return x;
     }
     
     void unreserve(int seatNumber) {
-        seats.push(seatNumber);
+        minHeap.push(seatNumber);
     }
-
-    //set, using then lower bound and upper bound?
 };
 
 /**
