@@ -1,27 +1,25 @@
 class LRUCache {
-
 private:
     struct ListNode {
-        ListNode* next;
+        int key, value;
         ListNode* prev;
-        int key;
-        int value;
-        ListNode(int k, int v) : key(k), value(v), next(nullptr), prev(nullptr) {}
+        ListNode* next;
+        ListNode(int k, int v) : key(k), value(v), prev(nullptr), next(nullptr) {}
     };
 
     ListNode* head;
     ListNode* tail;
     int capacity_;
-    map<int, ListNode*> keyToNode;
+    unordered_map<int, ListNode*> keyToNode;
 
     void deleteNode(ListNode* node) {
         ListNode* before = node->prev;
-        ListNode* after = node->next;
+        ListNode* after  = node->next;
         before->next = after;
         after->prev = before;
     }
 
-    void insertEnd(ListNode* node) {
+    void addToTail(ListNode* node) {
         ListNode* before = tail->prev;
         before->next = node;
         node->prev = before;
@@ -29,9 +27,9 @@ private:
         tail->prev = node;
     }
 
-    void moveToEnd(ListNode* node) {
+    void moveToTail(ListNode* node) {
         deleteNode(node);
-        insertEnd(node);
+        addToTail(node);
     }
 
 public:
@@ -44,34 +42,30 @@ public:
     }
 
     int get(int key) {
-        if (keyToNode.count(key)) {
-            ListNode* node = keyToNode[key];
-            moveToEnd(node);
-            return node->value;
-        }
-        return -1;
+        if (!keyToNode.count(key)) return -1;
+        ListNode* node = keyToNode[key];
+        moveToTail(node);
+        return node->value;
     }
 
     void put(int key, int value) {
         if (keyToNode.count(key)) {
-            // update existing
             ListNode* node = keyToNode[key];
             node->value = value;
-            moveToEnd(node);
+            moveToTail(node);
             return;
         }
 
-        // evict if needed
         if (keyToNode.size() == capacity_) {
             ListNode* lru = head->next;
-            keyToNode.erase(lru->key);
             deleteNode(lru);
+            keyToNode.erase(lru->key);
+            delete lru;
         }
 
-        // insert new
-        ListNode* newNode = new ListNode(key, value);
-        keyToNode[key] = newNode;
-        insertEnd(newNode);
+        ListNode* node = new ListNode(key, value);
+        addToTail(node);
+        keyToNode[key] = node;
     }
 };
 
