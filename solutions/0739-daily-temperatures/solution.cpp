@@ -1,20 +1,19 @@
 class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
-        stack<pair<int,int>> temps;
-        vector<int> res(temperatures.size());
-        for (int i = 0; i < temperatures.size(); i++) {
+        vector<int> result(temperatures.size(), 0);
 
-            while (!temps.empty() && temps.top().first < temperatures[i]) {
+        stack<pair<int,int>>temps;
+
+        for (int i = 0; i < temperatures.size(); i++) {
+            while (!temps.empty() && temperatures[i] > temps.top().first) {
                 auto curr = temps.top();
                 temps.pop();
-                res[curr.second] = i - curr.second;
+                int idx = curr.second;
+                result[idx] = i - idx;
             }
             temps.push({temperatures[i], i});
         }
-        return res;
+        return result;
     }
-//stack
-//im going to push elements into a stack
-//if a stack is not empty AND the current element im iterating through has a higher templrature than the top of the stack; ill pop the top element and ill record the time taken as the difference in the indices; I  WILL KEEP ON DOING THIS until the curr temp im at is < then the top element of the stack    
 };
