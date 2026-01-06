@@ -11,32 +11,30 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if (lists.empty()) {
+        if (lists.size() == 0) {
             return nullptr;
         }
         while (lists.size() > 1) {
-            ListNode* l1 = lists[0];
-            ListNode* l2 = lists[1];
-            lists.push_back(mergeSortedLists(l1, l2));
+            lists.push_back(mergeTwoSortedLists(lists[0], lists[1]));
             lists.erase(lists.begin());
             lists.erase(lists.begin());
         }
         return lists[0];
     }
 
-    ListNode* mergeSortedLists(ListNode* l1, ListNode* l2) {
-        if (!l1) {
-            return l2;
+    ListNode* mergeTwoSortedLists(ListNode* list1, ListNode* list2) {
+        if (!list1) {
+            return list2;
         }
-        if (!l2) {
-            return l1;
+        if (!list2) {
+            return list1;
         }
-        if (l1->val <= l2->val) {
-            l1->next = mergeSortedLists(l1->next, l2);
-            return l1;
+        if (list1->val <= list2->val) {
+            list1->next = mergeTwoSortedLists(list1->next, list2);
+            return list1;
         } else {
-            l2->next = mergeSortedLists(l1, l2->next);
-            return l2;
+            list2->next = mergeTwoSortedLists(list1, list2->next);
+            return list2;
         }
     }
 };
