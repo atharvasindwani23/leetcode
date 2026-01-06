@@ -1,38 +1,46 @@
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<int> indegree(numCourses, 0);
-        vector<vector<int>> adj(numCourses);
+        vector<int> result;
 
-        for (auto& pre : prerequisites) {
-            indegree[pre[1]]++;
-            adj[pre[0]].push_back(pre[1]);
+        unordered_map<int,vector<int>> neighbours;
+
+        for (vector<int> prereq : prerequisites) {
+            neighbours[prereq[1]].push_back(prereq[0]);
         }
+        cout << neighbours.size();
+        unordered_map<int,int> indegree;
 
-        queue<int> q;
-        for (int i = 0; i < numCourses; ++i) {
-            if (indegree[i] == 0) {
-                q.push(i);
+        for (auto x = neighbours.begin(); x != neighbours.end(); x++) {
+            for (int neigh : x->second) {
+                indegree[neigh]++;
             }
         }
+        
+        queue<int> sources;
 
-        int finish = 0;
-        vector<int> output(numCourses);
-        while (!q.empty()) {
-            int node = q.front();q.pop();
-            output[numCourses - finish - 1] = node;
-            finish++;
-            for (int nei : adj[node]) {
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) {
+                sources.push(i);
+            }
+        }
+        cout << sources.size();
+        int count = 0;
+        while (!sources.empty()) {
+            int curr = sources.front();
+            result.push_back(curr);
+            count++;
+            sources.pop();
+            for (int nei : neighbours[curr]) {
                 indegree[nei]--;
                 if (indegree[nei] == 0) {
-                    q.push(nei);
+                    sources.push(nei);
                 }
             }
         }
-
-        if (finish != numCourses) {
-            return {};
+        if (count == numCourses) {
+            return result;
         }
-        return output;
+        return {};
     }
 };
