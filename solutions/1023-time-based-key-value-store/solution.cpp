@@ -3,19 +3,22 @@ public:
     TimeMap() {
         
     }
-    unordered_map<string, map<int,string>> timemaps;
+    unordered_map<string, map<int, string>> timestamps;
     void set(string key, string value, int timestamp) {
-        timemaps[key][timestamp] = value;
+        timestamps[key][timestamp] = value;
     }
     
     string get(string key, int timestamp) {
-        auto it = timemaps[key].upper_bound(timestamp);
-        if (it == timemaps[key].begin()) {
+        auto& ordered_timestamps = timestamps[key];
+
+        auto it = ordered_timestamps.upper_bound(timestamp);
+
+        if (it == ordered_timestamps.begin()) {
             return "";
         }
         it--;
-        int time = it->first;
-        return timemaps[key][time];
+        return it->second;
+        //upper bound, or lower bound
     }
 };
 
