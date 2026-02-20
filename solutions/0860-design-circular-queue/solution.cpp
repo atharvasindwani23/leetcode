@@ -1,83 +1,83 @@
 class MyCircularQueue {
+
 private:
-    struct ListNode {
+
+struct ListNode {
     ListNode* next;
     ListNode* prev;
     int value;
-    ListNode(int k) {
-        value = k;
-        prev = nullptr;
-        next = nullptr;
-        }
-    };
-    ListNode* head;
-    ListNode* tail;
-    int capacity;
-    int size;
 
-        void insertAtEnd(ListNode* curr) {
-        ListNode* before = tail->prev;
-        ListNode* after = tail;
-        before->next = curr;
-        curr->prev = before;
-        curr->next = tail;
-        tail->prev = curr;
+    ListNode(int val) {
+        value = val;
     }
+};
 
+ListNode* head;
+ListNode* tail;
+int capacity;
+int size = 0;
 
 
 public:
-       MyCircularQueue(int k) {
+    MyCircularQueue(int k) {
         capacity = k;
         head = new ListNode(-1);
         tail = new ListNode(-1);
+
         head->next = tail;
         tail->prev = head;
-        size = 0;
     }
     
     bool enQueue(int value) {
-        ListNode* curr = new ListNode(value);
+        //insert at back
+        //delete at front
         if (size == capacity) {
             return false;
         }
-        insertAtEnd(curr);
+
         size++;
+        ListNode* curr = new ListNode(value);
+        ListNode* before = tail->prev;
+        ListNode* after = tail;
+
+        before->next = curr;
+        curr->prev = before;
+        after->prev = curr;
+        curr->next = after;
         return true;
     }
+
     
     bool deQueue() {
         if (size == 0) {
             return false;
         }
-        head = head->next;
         size--;
+        head = head->next;
         return true;
     }
     
     int Front() {
-        if(isEmpty()) {
+        if (size == 0) {
             return -1;
         }
         return head->next->value;
     }
-
-
-    //do it using a linked least -> head and tail can be dummy?
     
     int Rear() {
-        if(isEmpty()) {
+        if (size == 0) {
             return -1;
         }
         return tail->prev->value;
+        
     }
     
     bool isEmpty() {
-        return size == 0;
+        return (size ==0);
     }
     
     bool isFull() {
-        return size == capacity;
+        return (size == capacity);
     }
 };
 
