@@ -2,67 +2,60 @@ class BrowserHistory {
 
 private:
 
-        struct ListNode {
-            ListNode* next;
-            ListNode* prev;
-            string value;
-            ListNode(string str) {
-                value = str;
-            }
-        };
-    ListNode* head;
-    ListNode* tail;
-    ListNode* current;
+struct ListNode {
+    ListNode* next;
+    ListNode* prev;
+    string url;
+    ListNode(string str) {
+        url = str;
+    }
+};
+
+ListNode* head;
+ListNode* tail;
+ListNode* curr;
 
 public:
     BrowserHistory(string homepage) {
-        ListNode* curr = new ListNode(homepage);
         head = new ListNode("");
         tail = new ListNode("");
-        head->next = curr;
-        curr->prev = head;
-        curr->next = tail;
-        tail->prev = curr;
-        current = curr;
+        head->next = tail;
+        tail->prev = head;
+
+        ListNode* first = new ListNode(homepage);
+        head->next = first;
+        first->prev = head;
+        first->next = tail;
+        tail->prev = first;
+        curr = first;
     }
     
     void visit(string url) {
-        ListNode* urlNode = new ListNode(url);
-        current->next = urlNode;
-        urlNode->prev = current;
-        urlNode->next = tail;
-        tail->prev = urlNode;
-        current = urlNode;
+        ListNode* new_url = new ListNode(url);
+        new_url->next = tail;
+        tail->prev = new_url;
+        curr->next = new_url;
+        new_url->prev = curr;
+
+        curr = new_url;
     }
     
     string back(int steps) {
-        int counter = 0;
-        ListNode* flag = current;
-        while (counter != steps && flag != head->next) {
-            flag = flag->prev;
-            counter++;
+        int count = 0;
+        while (curr->prev != head && count != steps) {
+            curr = curr->prev;
+            count++;
         }
-        if (counter == steps) {
-            current = flag;
-            return current->value;
+            return curr->url;
         }
-        current = head->next;
-        return current->value;
-    }
     
     string forward(int steps) {
-        int counter = 0;
-        ListNode* flag = current;
-        while (counter != steps && flag != tail->prev) {
-            flag = flag->next;
-            counter++;
+         int count = 0;
+        while (curr->next != tail && count != steps) {
+            curr = curr->next;
+            count++;
         }
-        if (counter == steps) {
-            current = flag;
-            return current->value;
-        }
-        current = tail->prev;
-        return current->value;
+            return curr->url;
     }
 };
 
