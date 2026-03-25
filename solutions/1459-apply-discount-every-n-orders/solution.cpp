@@ -1,35 +1,36 @@
 class Cashier {
 public:
-
-    //1.figuring out how much someone has to pay for their groceries => amount[i] * price[i] where i is groceries they're buying
-    //2. which current customer am i serving
-    //3. how do i apply discount
-
-
-    //some sort of a mapping between product and price => agreed?
-    unordered_map<int,int> prodToPrice;
-    int count = 0;
+    unordered_map<int, int> productToPrice;
     int n = 0;
-    double disc = 0;
+    int discount = 0;
+    int count = 0;
     Cashier(int n, int discount, vector<int>& products, vector<int>& prices) {
         for (int i = 0; i < products.size(); i++) {
-            prodToPrice[products[i]] = prices[i];
+            productToPrice[products[i]] = prices[i];
+            this->n = n;
+            this->discount = discount;
         }
-        this->n = n;
-        disc = discount;
     }
     
     double getBill(vector<int> product, vector<int> amount) {
-        double totAmount = 0;
         count++;
+        double totalCost = 0;
+
         for (int i = 0; i < product.size(); i++) {
-            totAmount += prodToPrice[product[i]] * amount[i];
+            totalCost += amount[i] * productToPrice[product[i]];
         }
+
         if (count % n == 0) {
-            return (totAmount * (100 - disc)) / 100;
+            cout << discount << endl;
+            totalCost = totalCost * ((double)(100 - discount) / (double)100);
         }
-        return totAmount;
+        return totalCost;
     }
+
+    //product price amount
+    //total bill will be price[i] * amount[i] where i represents the ith product.
+    //we need some sort of a mapping between product and price right?
+    //logic should be that against this product this is the price.
 };
 
 /**
