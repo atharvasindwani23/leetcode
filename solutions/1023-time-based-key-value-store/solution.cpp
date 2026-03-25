@@ -3,22 +3,24 @@ public:
     TimeMap() {
         
     }
-    unordered_map<string, map<int, string>> timestamps;
+    //unordered_map<string, map<int, string>>
+    
+    unordered_map<string, map<int, string>> records;
     void set(string key, string value, int timestamp) {
-        timestamps[key][timestamp] = value;
+        records[key][timestamp] = value;
     }
     
     string get(string key, int timestamp) {
-        auto& ordered_timestamps = timestamps[key];
+        auto& x = records[key];
 
-        auto it = ordered_timestamps.upper_bound(timestamp);
+        auto kv = x.upper_bound(timestamp);
 
-        if (it == ordered_timestamps.begin()) {
+        if (x.begin() != kv) {
+            kv--;
+        } else {
             return "";
         }
-        it--;
-        return it->second;
-        //upper bound, or lower bound
+        return kv->second;
     }
 };
 
