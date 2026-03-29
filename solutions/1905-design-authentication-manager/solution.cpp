@@ -1,38 +1,46 @@
 class AuthenticationManager {
 public:
+    int ttl;
+    unordered_map<string, int> expiry;
+    queue<pair<int, string>> q;
 
-    int tokenTime = 0;
-    unordered_map<string, int> tokenLife; //maps token to when itll expire
     AuthenticationManager(int timeToLive) {
-        tokenTime = timeToLive;
+        ttl = timeToLive;
     }
-    
-    void generate(string tokenId, int currentTime) {
-        tokenLife[tokenId] = currentTime + tokenTime;
-    }
-    
-    void renew(string tokenId, int currentTime) {
-        if (tokenLife[tokenId] <= currentTime) {
-            return;
-        }   
-        tokenLife[tokenId] = currentTime + tokenTime;
-    }
-    
-    int countUnexpiredTokens(int currentTime) {
-        int count = 0;
-        for (auto x = tokenLife.begin(); x != tokenLife.end(); x++) {
-            if (x->second > currentTime) {
-                count++;
+
+    void clean(int currentTime) {
+        while (!q.empty() && q.front().first <= currentTime) {
+            int expTime = q.front().first;
+            string tokenId = q.front().second;
+            q.pop();
+
+            if (expiry.count(tokenId) && expiry[tokenId] == expTime) {
+                expiry.erase(tokenId);
             }
         }
-        return count;
+    }
+
+    void generate(string tokenId, int currentTime) {
+        clean(currentTime);
+        int expTime = currentTime + ttl;
+        expiry[tokenId] = expTime;
+        q.push({expTime, tokenId});
+    }
+
+    void renew(string tokenId, int currentTime) {
+        clean(currentTime);
+
+        if (!expiry.count(tokenId)) {
+            return;
+        }
+
+        int newExpTime = currentTime + ttl;
+        expiry[tokenId] = newExpTime;
+        q.push({newExpTime, tokenId});
+    }
+
+    int countUnexpiredTokens(int currentTime) {
+        clean(currentTime);
+        return expiry.size();
     }
 };
-
-/**
- * Your AuthenticationManager object will be instantiated and called as such:
- * AuthenticationManager* obj = new AuthenticationManager(timeToLive);
- * obj->generate(tokenId,currentTime);
- * obj->renew(tokenId,currentTime);
- * int param_3 = obj->countUnexpiredTokens(currentTime);
- */
