@@ -16,7 +16,7 @@ public:
         auto kv = x.upper_bound(timestamp);
 
         if (x.begin() != kv) {
-            kv--;
+            kv = prev(kv);
         } else {
             return "";
         }
