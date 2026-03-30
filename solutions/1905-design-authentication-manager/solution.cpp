@@ -1,46 +1,60 @@
 class AuthenticationManager {
-public:
-    int ttl;
-    unordered_map<string, int> expiry;
-    queue<pair<int, string>> q;
 
+private:
+
+unordered_map<string, int> tokenExpiry;
+queue<pair<int,string>> tokens;
+int ttl = 0;
+
+void clean(int currentTime) {
+    while (!tokens.empty() && tokens.front().first <= currentTime) {
+        auto [time, id] = tokens.front();
+        tokens.pop();
+        if (tokenExpiry.count(id) && tokenExpiry[id] == time) {
+            tokenExpiry.erase(id);
+        }
+    }
+}
+public:
     AuthenticationManager(int timeToLive) {
         ttl = timeToLive;
     }
-
-    void clean(int currentTime) {
-        while (!q.empty() && q.front().first <= currentTime) {
-            int expTime = q.front().first;
-            string tokenId = q.front().second;
-            q.pop();
-
-            if (expiry.count(tokenId) && expiry[tokenId] == expTime) {
-                expiry.erase(tokenId);
-            }
-        }
-    }
-
+    
     void generate(string tokenId, int currentTime) {
         clean(currentTime);
-        int expTime = currentTime + ttl;
-        expiry[tokenId] = expTime;
-        q.push({expTime, tokenId});
-    }
-
-    void renew(string tokenId, int currentTime) {
-        clean(currentTime);
-
-        if (!expiry.count(tokenId)) {
+        if (tokenExpiry.count(tokenId)) {
             return;
         }
-
-        int newExpTime = currentTime + ttl;
-        expiry[tokenId] = newExpTime;
-        q.push({newExpTime, tokenId});
+        tokenExpiry[tokenId] = ttl + currentTime;
+        tokens.push({ttl + currentTime, tokenId});
     }
+    
+    void renew(string tokenId, int currentTime) {
+        clean(currentTime);
+        if (!tokenExpiry.count(tokenId) || tokenExpiry[tokenId] <= currentTime) {
+            return;
+        }
+        tokenExpiry[tokenId] = currentTime + ttl;
+        tokens.push({ttl + currentTime, tokenId});
 
+    }
     int countUnexpiredTokens(int currentTime) {
         clean(currentTime);
-        return expiry.size();
+        // int count = 0;
+        // for (auto x = tokenExpiry.begin(); x != tokenExpiry.end(); x++) {
+        //     if (x->second > currentTime) {
+        //         count++;
+        //     }
+        // }
+        // return count;
+        return tokenExpiry.size();
     }
 };
+
+/**
+ * Your AuthenticationManager object will be instantiated and called as such:
+ * AuthenticationManager* obj = new AuthenticationManager(timeToLive);
+ * obj->generate(tokenId,currentTime);
+ * obj->renew(tokenId,currentTime);
+ * int param_3 = obj->countUnexpiredTokens(currentTime);
+ */
