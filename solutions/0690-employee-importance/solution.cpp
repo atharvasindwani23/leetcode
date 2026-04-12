@@ -10,41 +10,49 @@ public:
 
 class Solution {
 public:
-    unordered_map<int, vector<int>> children;
-    unordered_map<int, Employee*> id_emp;
     int getImportance(vector<Employee*> employees, int id) {
-        Employee* special;
-        for (Employee* employee : employees) {
-            if (employee->id == id) {
-                special = employee;
-            }
-            id_emp[employee->id] = employee;
-            children[employee->id] = employee->subordinates; //o(n) operation
-        }
-        queue<Employee*> bfs;
-        unordered_set<Employee*> visited;
-        bfs.push(special);
-        int sum = 0;
-        while (!bfs.empty()) {
-            auto x = bfs.front();
-            bfs.pop();
-            sum += x->importance;
+        unordered_map<int, Employee*> idEmp_;
 
-            for (int emp : children[x->id]) {
-                if (!visited.count(id_emp[emp])) {
-                    visited.insert(id_emp[emp]);
-                    bfs.push(id_emp[emp]);
+        for (Employee* emp : employees) {
+            idEmp_[emp->id] = emp;
+        }
+        Employee* specialEmp_ = idEmp_[id];
+
+        queue<Employee*> empTree;
+
+        set<Employee*> visited;
+
+        empTree.push(specialEmp_);
+
+        visited.insert(specialEmp_);
+
+        int sum = 0;
+        
+
+        while (!empTree.empty()) {
+
+            Employee* first = empTree.front();
+            empTree.pop();
+
+            sum += first->importance;
+
+            for (int id : first->subordinates) {
+                Employee* e = idEmp_[id];
+                if (!visited.count(e)) {
+                    visited.insert(e);
+                    empTree.push(e);
                 }
             }
         }
+
         return sum;
+
+        //run bfs on this PARTICULAR EMPLOYEE
     }
 
-    //easy => pretty much the sum of the tree
-    //once we get this special id we essentially just want to do a bfs/dfs to calculate the sum of everything else
-    //now if we had a map of sorts this would get easier => how? we'll have an id mapped to its importance and a vector of its direct children => unordered_map<int, vector<int>>
-
-
-
-
+    //calculate the sum of all the nodes in a tree
+    //how do we go about this
+    // we know that every employee has a unique id
+    //goal is to find that id and then do a very simple bfs on the particular id to calculate the sum
+    //we can unwrap the employees vector and create a hashmap which gives us O(1) access to the employee object
 };
