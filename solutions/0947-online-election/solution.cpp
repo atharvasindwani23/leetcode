@@ -24,19 +24,12 @@ public:
     }
     
     int q(int t) {
-        int left = 0;
-        int right = voteTimes.size() - 1;
+        
+        auto it = upper_bound(voteTimes.begin(), voteTimes.end(), t);
 
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
+        it--;
 
-            if (voteTimes[mid] <= t) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
 
-        return leaderAtIndex[right];
+        return leaderAtIndex[it - voteTimes.begin()];
     }
 };
