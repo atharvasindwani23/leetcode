@@ -1,25 +1,33 @@
 class Solution {
 public:
-    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
-        vector<int> dp(flowerbed.size() + 1, 0);
-         int len = flowerbed.size();
-         dp[len] = 0;
-         if (flowerbed[len - 1] == 0) {
-            dp[len - 1] = 1;
-         } else {
-            dp[len - 1] = 0; 
+    bool canPlaceFlowers(vector<int>& flowers, int n) {
+        int count = 0;
+
+    if (flowers.size() == 1 && flowers[0] == 0 && n == 1) {
+        return true;
+    }
+     if (flowers.size() == 1 && flowers[0] == 0 && n == 0) {
+        return true;
+    }
+    for (int i = 0; i < flowers.size(); i++) {
+        int flower = flowers[i];
+        if (flower == 1) {
+            continue;
+        }
+        if (i == 0 && flowers[i + 1] == 0) {
+            flowers[0] = 1;
+            count++;
+        }
+
+        else if (i > 0 && i == flowers.size() - 1 && flowers[i - 1] == 0) {
+            flowers[flowers.size() - 1] = 1;
+            count++;
+        }
+        else if (i > 0 && i < flowers.size() - 1 && flowers[i - 1] == 0 && flowers[i + 1] == 0) {
+             flowers[i] = 1;
+             count++;
          }
-         for (int i = len - 2; i >= 0; i--) {
-            if (flowerbed[i] == 1) {
-                dp[i] = dp[i + 2];
-            } else {
-                if (flowerbed[i + 1] == 1) {
-                    dp[i] = dp[i + 1];
-                } else {
-                    dp[i] = dp[i + 2] + 1;
-                }
-            }
-         }
-         return dp[0] >= n;
+    }
+    return count >= n;
     }
 };
