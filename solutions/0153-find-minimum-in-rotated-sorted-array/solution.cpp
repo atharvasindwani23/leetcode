@@ -7,10 +7,8 @@ public:
         int mid = low + (high - low) / 2;
         
         if (nums[mid] > nums[high]) {
-            // Smallest element is on the right side
             low = mid + 1;
         } else {
-            // Smallest element is on the left side or is mid itself
             high = mid;
         }
     }
